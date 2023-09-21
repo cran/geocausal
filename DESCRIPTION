@@ -1,7 +1,7 @@
 Package: geocausal
 Type: Package
 Title: Causal Inference with Spatio-Temporal Data
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person(given = "Mitsuru", family = "Mukaigawara", 
            email = "mitsuru_mukaigawara@g.harvard.edu", 
@@ -31,18 +31,17 @@ Encoding: UTF-8
 LazyData: true
 Suggests: elevatr, geosphere, gridExtra, ggthemes, knitr, readr,
         rmarkdown
-VignetteBuilder: knitr
 Imports: data.table, dplyr, furrr, ggplot2, ggpubr, latex2exp, mclust,
         progressr, purrr, raster, sf, sp, spatstat.explore,
-        spatstat.geom, spatstat.model, tidyr, tidyselect
+        spatstat.geom, spatstat.model, terra, tidyr, tidyselect
 RoxygenNote: 7.2.3
 Depends: R (>= 3.5.0)
 NeedsCompilation: no
-Packaged: 2023-08-21 08:30:05 UTC; mitsurumukaigawara
+Packaged: 2023-09-21 01:53:07 UTC; mmukaigawara
 Author: Mitsuru Mukaigawara [cre, aut]
     (<https://orcid.org/0000-0001-6530-2083>),
   Georgia Papadogeorgou [aut] (<https://orcid.org/0000-0002-1982-2245>),
   Jason Lyall [aut] (<https://orcid.org/0000-0001-9117-7503>),
   Kosuke Imai [aut] (<https://orcid.org/0000-0002-2748-1022>)
 Repository: CRAN
-Date/Publication: 2023-08-21 14:10:19 UTC
+Date/Publication: 2023-09-21 02:40:02 UTC
