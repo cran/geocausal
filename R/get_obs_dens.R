@@ -24,37 +24,36 @@
 #' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`.
 #' Users should note that the coefficients in the output are not directly interpretable,
 #' since they are the coefficients inside the exponential of the poisson model.
-#' 
+#'
 #' @examples
 #' # Data
 #' dat_out <- insurgencies[1:100, ]
 #' dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
-#' 
+#'
 #' # Hyperframe
 #' dat_hfr <- get_hfr(data = dat_out,
-#'                    subtype_column = "type",
+#'                    col = "type",
 #'                    window = iraq_window,
-#'                    time_column = "time",
+#'                    time_col = "time",
 #'                    time_range = c(1, max(dat_out$time)),
 #'                    coordinates = c("longitude", "latitude"),
-#'                    combined = TRUE)
+#'                    combine = TRUE)
 #'
 #' # Covariates
 #' dist_baghdad <- get_dist_focus(window = iraq_window,
-#'                                longitude = c(44.366), #Baghdad
-#'                                latitude = c(33.315),
+#'                                lon = c(44.366), #Baghdad
+#'                                lat = c(33.315),
 #'                                resolution = 0.1,
-#'                                grayscale = FALSE,
 #'                                mile = FALSE,
 #'                                preprocess = FALSE)
-#' 
-#' dat_hfr$dist_bagh <- dist_baghdad$distance_im
-#' 
+#'
+#' dat_hfr$dist_bagh <- dist_baghdad
+#'
 #' # Observed density
 #' get_obs_dens(dat_hfr,
 #'              dep_var = "all_combined",
 #'              indep_var = c("dist_bagh"),
-#'              ngrid = 100, 
+#'              ngrid = 100,
 #'              window = iraq_window)
 
 get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
@@ -63,7 +62,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
   message("Fitting the model...\n")
   mod <- spatstat.model::mppm(as.formula(text_form), data = hfr) #Fit mppm
-  coefficients <- as.numeric(summary(mod)$coef) #Coefficients
+  coefficients <- as.numeric(spatstat.model::summary.mppm(mod)$coef) #Coefficients
 
   # Obtain fitted values of the propensity score -----
   message("Calculating the intensity...\n")
@@ -77,10 +76,13 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
     return(r)
   })
 
-  return(list(indep_var = indep_var, #List of independent variables
+  out <- list(indep_var = indep_var, #List of independent variables
               coef = coefficients, #Coefficients
               intens_grid_cells = intensity_grid_cells, #Integrated intensity as images
               estimated_counts = estimated_counts, #Counts
-              sum_log_intens = sum_log_intensity)) #Sum of log(intensity) for each time period
+              sum_log_intens = sum_log_intensity) #Sum of log(intensity) for each time period
+
+  class(out) <- c("list", "obs")
+  return(out)
 
 }

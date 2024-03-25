@@ -1,60 +1,34 @@
-#' Visualize hyperframes
+#' Plot estimates
 #'
-#' @description
-#' `vis_hfr()` takes a hyperframe and visualizes columns that users specify.
-#' `vis_hfr()` is used mainly for the visualization of the output of [get_hfr()] function.
-#'
-#' @param hfr hyperframe
-#' @param subtype_column The name/s of a column of interest.
+#' @param x input
+#' @param ... arguments passed on to the function
+#' @param col the name/s of a column of interest.
 #' To specify multiple columns, users should list column names as a character vector.
-#' @param time_column The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.
+#' @param time_col The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.
 #' @param range vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)
+#' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param combined logical. `combined` specifies whether to combine all the point processes to one plot.
 #' This argument applies only to the case when users specify one column with multiple time periods.
 #' By default = TRUE
+#' @param scalename the name of the scale (for images only)
+#' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
 #'
-#' @returns ggplot object that displays ppp objects of interest
-#'
-#' @examples
-#' # Data
-#' dat <- data.frame(time = c(1, 1, 2, 2),
-#'                   longitude = c(43.9, 44.5, 44.1, 44.0),
-#'                   latitude = c(33.6, 32.7, 33.6, 33.5),
-#'                   type = rep(c("treat", "out"), 2))
-#'
-#' # Hyperframe
-#' dat_hfr <- get_hfr(data = dat,
-#'                    subtype_column = "type",
-#'                    window = iraq_window,
-#'                    time_column = "time",
-#'                    time_range = c(1, 2),
-#'                    coordinates = c("longitude", "latitude"),
-#'                    combined = FALSE)
-#'
-#' # Visualization
-#' vis_hfr(hfr = dat_hfr,
-#'         subtype_column = c("treat"),
-#'         time_column = "time",
-#'         range = c(1:2),
-#'         combined = TRUE)
-
-vis_hfr <- function(hfr,
-                    subtype_column,
-                    time_column = "time",
-                    range,
-                    combined = TRUE) {
+#' @export
+plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
+                            scalename = NA, color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
+                            combined = TRUE) {
 
   # Clean the hyperframe -----
-  hfr_temp <- hfr
+  hfr_temp <- x
 
   if (length(range) == 1) { all_rows <- range } else
   { all_rows <- seq(min(range), max(range), by = 1)} #Sequence of all rows
 
-  time_id <- which(names(hfr_temp) == time_column)
+  time_id <- which(names(hfr_temp) == time_col)
   names(hfr_temp)[time_id] <- "time" #Rename the time column
 
   row_id <- which(hfr_temp$time %in% all_rows) #Obtain the time period row IDs
-  outcome_id <- which(names(hfr_temp) %in% subtype_column) #Obtain the outcome column IDs
+  outcome_id <- which(names(hfr_temp) %in% col) #Obtain the outcome column IDs
 
   hfr_cleaned <- hfr_temp[row_id, c(time_id, outcome_id)] #Return necessary portions of hfr
 
@@ -63,7 +37,7 @@ vis_hfr <- function(hfr,
   num_outcome_columns <- ncol(hfr_cleaned) - 1 #Subtract 1 d/t time column
 
   # Convert window to df
-  window <- spatstat.geom::Window(hfr_cleaned[1, which(colnames(hfr_cleaned) == subtype_column[1])][[1]])
+  window <- spatstat.geom::Window(hfr_cleaned[1, which(colnames(hfr_cleaned) == col[1])][[1]])
   window_sp <- conv_owin_into_sf(window)
   polygon_df <- window_sp[[2]]
 
@@ -75,7 +49,7 @@ vis_hfr <- function(hfr,
         ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys")
     } else {
       ggplot_obj <- ggplot_object +
-        ggplot2::scale_fill_viridis_c(option = "plasma")
+        ggplot2::scale_fill_gradientn(colors = color)
     }
 
     return(ggplot_obj)
@@ -86,29 +60,54 @@ vis_hfr <- function(hfr,
 
   if (num_time_period == 1 && num_outcome_columns == 1) {
 
-    # Case 1: One time period x One outcome column
+    # Case 1: One time period x One outcome column -----
 
-    ## If ppp
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
     time_vis <- hfr_cleaned$time[1]$time #Time period to visualize
-    dat <- hfr_cleaned[1, 2][[1]] #Convert points to df
-    df <- data.frame(longitude = dat$x, latitude = dat$y)
 
-    gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
-      ggplot2::geom_point(shape = 1, size = 1.5) +
-      ggplot2::coord_quickmap() +
-      ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
-      ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
-      ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    if (!inherits(hfr_cleaned[1, 2][[1]], "im")) { # If ppp
 
-    ## If image -> TBD
+      dat <- hfr_cleaned[1, 2][[1]] #Convert points to df
+      df <- data.frame(longitude = dat$x, latitude = dat$y)
+
+      gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
+        ggplot2::geom_point(shape = 1, size = 1.5) +
+        ggplot2::coord_quickmap() +
+        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
+        ggthemes::theme_map() +
+        ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
+        ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+    } else { # If im
+
+      window_sp <- conv_owin_into_sf(spatstat.geom::Window(hfr_cleaned[1, 2][[1]]))
+      polygon_df <- window_sp[[2]] #Convert owin to DF
+
+      gg <- ggplot2::ggplot() + #Plot smoothed outcome
+        tidyterra::geom_spatraster(data = terra::rast(hfr_cleaned[1, 2][[1]])) +
+        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
+                              fill = NA, color = "darkgrey", linewidth = 0.2) +
+        ggthemes::theme_map() +
+        ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
+        ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+                       legend.position = "bottom")
+
+      if (is.na(lim)[1]) {
+
+        gg <- gg + ggplot2::scale_fill_gradientn(colors = color, na.value = NA, name = scalename)
+
+        } else {
+
+        gg <- gg + ggplot2::scale_fill_gradientn(colors = color, na.value = NA, name = scalename, limits = lim)
+
+        }
+
+    }
 
   } else if (num_time_period == 1 && num_outcome_columns > 1) {
 
-    # Case 2: One time period x Multiple outcome columns
+    # Case 2: One time period x Multiple outcome columns: PPP only
 
-    ## If ppp
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
     time_vis <- hfr_cleaned$time[1]$time #Time period to visualize
 
@@ -141,7 +140,7 @@ vis_hfr <- function(hfr,
 
   } else if (num_time_period > 1 && num_outcome_columns == 1) {
 
-    # Case 3: Multiple time periods x One outcome column
+    # Case 3: Multiple time periods x One outcome column: PPP only
 
     ## If ppp
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
@@ -196,13 +195,10 @@ vis_hfr <- function(hfr,
 
     }
 
-    ## If Image -> TBD
-
   } else if (num_time_period > 1 && num_outcome_columns > 1) {
 
-    # Case 4: Mutliple time periods x Multiple outcome columns
+    # Case 4: Mutliple time periods x Multiple outcome columns: PPP only, automatically combine
 
-    ## If ppp
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
     time_vis <- hfr_cleaned$time #Time period to visualize
 
@@ -236,14 +232,7 @@ vis_hfr <- function(hfr,
                      plot.title = element_text(hjust = 0.5, face = "bold")) +
       ggplot2::facet_wrap(vars(subtype))
 
-    ## If Image -> TBD
-
   }
-
-  # If the object is smoothed outcomes (ie, pixel images) ----------
-  #if (class(hfr_temp$Outcome)[1] == "imlist") {
-  # If the object is point processes (ie, ppp) ----------
-  #} else if (class(hfr_temp$Outcome)[1] == "ppplist")
 
   return(gg)
 

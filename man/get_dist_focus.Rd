@@ -4,26 +4,16 @@
 \alias{get_dist_focus}
 \title{Get distance maps}
 \usage{
-get_dist_focus(
-  window,
-  longitude,
-  latitude,
-  resolution,
-  grayscale,
-  mile = FALSE,
-  preprocess = FALSE
-)
+get_dist_focus(window, lon, lat, resolution, mile = FALSE, preprocess = FALSE)
 }
 \arguments{
 \item{window}{owin object}
 
-\item{longitude}{vector of longitudes}
+\item{lon}{vector of longitudes}
 
-\item{latitude}{vector of latitudes}
+\item{lat}{vector of latitudes}
 
 \item{resolution}{resolution of raster objects}
-
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).}
 
@@ -31,7 +21,7 @@ get_dist_focus(
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
 }
 \value{
-A list of im and ggplot object
+an im object
 }
 \description{
 `get_dist_focus()` generates a distance map from focus locations.
@@ -48,10 +38,9 @@ By default, `get_dist_focus()` returns distances in kilometers unless users set 
 }
 \examples{
 get_dist_focus(window = iraq_window,
-               longitude = c(44.366), #Baghdad
-               latitude = c(33.315),
+               lon = c(44.366), #Baghdad
+               lat = c(33.315),
                resolution = 0.5,
-               grayscale = FALSE,
                mile = FALSE,
                preprocess = FALSE)
 }

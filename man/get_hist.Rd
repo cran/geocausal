@@ -13,7 +13,7 @@ get_hist(tt, Xt, Yt = NA, lag, window, x_only = TRUE)
 
 \item{Yt}{the name of an outcome column}
 
-\item{lag}{numeric. `lag` specifies the number of time periods over which 
+\item{lag}{numeric. `lag` specifies the number of time periods over which
 `get_hist()` aggregates treatment and outcome columns.}
 
 \item{window}{owin object.}
@@ -32,12 +32,12 @@ dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
 
 # Hyperframe
 dat_hfr <- get_hfr(data = dat_out,
-                   subtype_column = "type",
+                   col = "type",
                    window = iraq_window,
-                   time_column = "time",
+                   time_col = "time",
                    time_range = c(1, max(dat_out$time)),
                    coordinates = c("longitude", "latitude"),
-                   combined = TRUE)
+                   combine = TRUE)
 
 # Histories
 lapply(1:nrow(dat_hfr), get_hist,

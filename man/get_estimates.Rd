@@ -2,54 +2,43 @@
 % Please edit documentation in R/get_estimates.R
 \name{get_estimates}
 \alias{get_estimates}
-\title{Get causal estimates comparing two scenarios}
+\title{Generate a Hajek estimator}
 \usage{
 get_estimates(
-  obs_dens,
-  cf_dens,
-  treatment_data,
-  smoothed_outcome,
-  lag,
-  entire_window,
+  weighted_surf_1,
+  weighted_surf_2,
+  use_dist = TRUE,
+  windows,
   dist_map,
   dist,
-  dist_map_unit = "km",
-  grayscale
+  entire_window
 )
 }
 \arguments{
-\item{obs_dens}{observed density}
+\item{weighted_surf_1}{a weighted surface for scenario 1}
 
-\item{cf_dens}{counterfactual density}
+\item{weighted_surf_2}{another weighted surface for scenario 2}
 
-\item{treatment_data}{column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.}
+\item{use_dist}{whether to use distance-based maps. By default, TRUE}
 
-\item{smoothed_outcome}{column of a hyperframe that summarizes the smoothed outcome data}
+\item{windows}{a list of owin objects (if `use_dist = FALSE`)}
 
-\item{lag}{integer that specifies lags to calculate causal estimates}
+\item{dist_map}{distance map (an im object, if `use_dist = TRUE`)}
 
-\item{entire_window}{owin object (the entire region of interest)}
+\item{dist}{distances (a numeric vector within the max distance of `dist_map`)}
 
-\item{dist_map}{im object (distance map); notice that the unit (either mile or km) is inherited from the distance map}
-
-\item{dist}{a vector of distances for which the function calculates the expectations (e.g., `c(50, 100, 150, 200)`)}
-
-\item{dist_map_unit}{either `"km"` or `"mile"`}
-
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
+\item{entire_window}{an owin object of the entire map}
 }
 \value{
-list of the following:
-`average_expected_events`: Hajek estimators (counts, the entire window)
-`average_expected_events_quantiles`: percentiles of Hajek estimators
-`weights`: weights
-`average_weights`: mean of `weights`
-`plot`: plot showing distance-based expectations
-`distances`: distances
-`distances_window`: as window objects
-`expectation_plot`: plot of expectations
-`window_plot`: plot of windows
+list of Hajek estimators for each scenario (`est_haj`), 
+causal contrasts (Hajek estimator) as a matrix (`est_tau_haj_matrix`), and 
+causal contrast (scenario 2 - scenario 1) as a numeric vector (`est_tau_haj_cf2_vs_cf1`), 
+along with weights, windows, and smoothed outcomes
 }
 \description{
-`get_estimates()` generates causal estimates comparing two counterfactual scenarios.
+A function that returns a Hajek estimator of causal contrasts
+}
+\details{
+`get_estimates()` is an internal function to `get_est()` function, 
+performing the estimation analysis after `get_weighted_surf()` function
 }

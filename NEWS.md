@@ -1,3 +1,13 @@
+# geocausal 0.3.0
+
+* Updated the estimation procedure.
+* Introduced S3 methods throughout (changed the names of several key functions such as `plot()` and `summary()`).
+
+# geocausal 0.2.1
+
+* Modified the output of `get_dist_based_exp()` and `get_causal_cont()` by removing the plots of windows.
+* Removed imports from the `sp` package.
+
 # geocausal 0.2.0
 
 * Updated the `get_base_dens()` function with an option to use in-sample dataset.

@@ -3,16 +3,15 @@
 #' @description 
 #' `get_dist_focus()` generates a distance map from focus locations.
 #'
-#' @param longitude vector of longitudes
-#' @param latitude vector of latitudes
+#' @param lon vector of longitudes
+#' @param lat vector of latitudes
 #' @param window owin object
 #' @param resolution resolution of raster objects
-#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point. 
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
 #'
-#' @returns A list of im and ggplot object
+#' @returns an im object
 #' 
 #' @details
 #' `get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`. 
@@ -26,15 +25,14 @@
 #' 
 #' @examples
 #' get_dist_focus(window = iraq_window,
-#'                longitude = c(44.366), #Baghdad
-#'                latitude = c(33.315),
+#'                lon = c(44.366), #Baghdad
+#'                lat = c(33.315),
 #'                resolution = 0.5,
-#'                grayscale = FALSE,
 #'                mile = FALSE,
 #'                preprocess = FALSE)
 
-get_dist_focus <- function(window, longitude, latitude, resolution,
-                           grayscale, mile = FALSE, preprocess = FALSE){
+get_dist_focus <- function(window, lon, lat, resolution,
+                           mile = FALSE, preprocess = FALSE){
   
   # Convert owin into sp objects  
   window_sp <- conv_owin_into_sf(window)
@@ -45,7 +43,7 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   polygon_spdf <- window_sp[[5]]
   
   # Create sf objects
-  point_df <- data.frame(longitude = longitude, latitude = latitude)
+  point_df <- data.frame(longitude = lon, latitude = lat)
   num_points <- nrow(point_df)
   point_sf <- sf::st_as_sf(point_df, coords = c("longitude", "latitude"))
   
@@ -122,13 +120,13 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
     
     if (mile) {
       
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = dists[, 2] * 0.621371/1000) #miles
     } else {
       
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = dists[, 2]/1000) #km
       
     }
@@ -159,71 +157,14 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
     
     if (mile) {
       
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = point_dists * 0.621371/1000) #miles
     } else {
       
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = point_dists/1000) #km
-      
-    }
-    
-  }
-  
-  
-  # Generate a plot
-  
-  if (mile) { #miles
-    
-    if (grayscale) {
-      
-      gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
-        ggplot2::geom_tile() +
-        ggplot2::coord_quickmap() +
-        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "white") +
-        ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
-        ggthemes::theme_map() +
-        ggplot2::ggtitle("Distance from the Focus") + labs(fill = "Distance (mile)") +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-      
-    } else {
-      
-      gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
-        ggplot2::geom_tile() +
-        ggplot2::coord_quickmap() +
-        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "white") +
-        ggplot2::scale_fill_viridis_c(option = "plasma") + 
-        ggthemes::theme_map() +
-        ggplot2::ggtitle("Distance from the Focus") + labs(fill = "Distance (mile)") +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-      
-    }
-    
-  } else { #kilometers
-    
-    if (grayscale) {
-      
-      gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
-        ggplot2::geom_tile() +
-        ggplot2::coord_quickmap() +
-        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "white") +
-        ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
-        ggthemes::theme_map() +
-        ggplot2::ggtitle("Distance from the Focus") + labs(fill = "Distance (km)") +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-      
-    } else {
-      
-      gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
-        ggplot2::geom_tile() +
-        ggplot2::coord_quickmap() +
-        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "white") +
-        ggplot2::scale_fill_viridis_c(option = "plasma") + 
-        ggthemes::theme_map() +
-        ggplot2::ggtitle("Distance from the Focus") + labs(fill = "Distance (km)") +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
       
     }
     
@@ -232,7 +173,7 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   # Generate an image object
   distance_im <- spatstat.geom::as.im(dist_df, W = window)
   
-  # Return a list of output
-  return(list(distance_im = distance_im, plot = gg))
+  # Return an image object
+  return(distance_im)
   
 }

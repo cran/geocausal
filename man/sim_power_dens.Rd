@@ -10,6 +10,7 @@ sim_power_dens(
   priorities,
   priorities_manip,
   window,
+  color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
   grayscale = FALSE
 )
 }
@@ -24,6 +25,8 @@ sim_power_dens(
 
 \item{window}{owin object}
 
+\item{color}{the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".}
+
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 }
 \value{
@@ -36,25 +39,23 @@ and returns a power density image over a range of parameters
 \examples{
 # Density 1: Distance from Mosul
 dist_from_mosul <- get_dist_focus(window = iraq_window,
-                                  longitude = c(43.158),
-                                  latitude = c(36.349),
+                                  lon = c(43.158),
+                                  lat = c(36.349),
                                   resolution = 0.5,
-                                  grayscale = FALSE,
                                   mile = FALSE,
                                   preprocess = FALSE)
 
 # Density 2: Distance from Baghdad
 dist_from_baghd <- get_dist_focus(window = iraq_window,
-                                  longitude = c(44.366),
-                                  latitude = c(33.315),
+                                  lon = c(44.366),
+                                  lat = c(33.315),
                                   resolution = 0.5,
-                                  grayscale = FALSE,
                                   mile = FALSE,
                                   preprocess = FALSE)
-                                  
+
 # Simulation
-sim_power_dens(target_dens = list(dist_from_baghd$distance_im),
-               dens_manip = dist_from_mosul$distance_im,
+sim_power_dens(target_dens = list(dist_from_baghd),
+               dens_manip = dist_from_mosul,
                priorities = 1,
                priorities_manip = c(1, 2, 5, 10, 15, 50),
                window = iraq_window,

@@ -6,24 +6,24 @@
 \usage{
 get_hfr(
   data,
-  subtype_column,
+  col,
   window,
-  time_column,
+  time_col,
   time_range,
   coordinates = c("longitude", "latitude"),
-  combined = TRUE
+  combine = TRUE
 )
 }
 \arguments{
 \item{data}{dataframe. The dataframe must have time and location variables.
 Location variables should be standard coordinates (i.e., longitudes and latitudes).}
 
-\item{subtype_column}{the name of the column for subtypes of events of interest}
+\item{col}{the name of the column for subtypes of events of interest}
 
 \item{window}{owin object (for more information, refer to `spatstat.geom::owin()`).
 Basically, an owin object specifies the geographical boundaries of areas of interest.}
 
-\item{time_column}{the name of the column for time variable. Note that the time variable must be integers.}
+\item{time_col}{the name of the column for time variable. Note that the time variable must be integers.}
 
 \item{time_range}{numeric vector. `time_range` specifies the range of the time variable
 (i.e., min and max of the time variable).
@@ -32,14 +32,14 @@ The current version assumes that the unit of this time variable is dates.}
 \item{coordinates}{character vector. `coordinates` specifies the names of columns for locations.
 By default, `c("longitude", "latitude")` in this order. Note that the coordinates must be in decimal degree formats.}
 
-\item{combined}{logical. `combined` tells whether to generate output for all subtypes of events combined.
+\item{combine}{logical. `combine` tells whether to generate output for all subtypes of events combined.
 By default, `TRUE`, which means that a column of ppp objects with all subtypes combined is generated in the output.}
 }
 \value{
 A hyperframe is generated with rows representing time and columns representing the following:
     * The first column: time variable
     * The middle columns: ppp objects (see `spatstat.geom::ppp()`) generated for each subtype of events of interest
-    * The last column (if `combined = TRUE`): ppp objects with all subtypes combined. This column is named as `all_combined`.
+    * The last column (if `combine = TRUE`): ppp objects with all subtypes combined. This column is named as `all_combined`.
 }
 \description{
 `get_hfr()` takes a dataframe with time and location variables
@@ -56,10 +56,10 @@ dat <- data.frame(time = c(1, 1, 2, 2),
 
 # Hyperframe
 get_hfr(data = dat,
-        subtype_column = "type",
+        col = "type",
         window = iraq_window,
-        time_column = "time",
+        time_col = "time",
         time_range = c(1, 2),
         coordinates = c("longitude", "latitude"),
-        combined = FALSE)
+        combine = FALSE)
 }
