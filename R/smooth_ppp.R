@@ -26,25 +26,6 @@
 #' Essentially, this model assumes that the bandwidth is inversely proportional to the square root of the target densities.
 #' Since the bandwidth is adaptive, the estimation is usually more precise than the Gaussian mixture model.
 #' However, the caveat is that this method is often extremely computationally demanding.
-#'
-#' @examples
-#' # Time variable
-#' dat_out <- insurgencies[1:100, ]
-#' dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
-#'
-#' # Hyperframe
-#' dat_hfr <- get_hfr(data = dat_out,
-#'                    col = "type",
-#'                    window = iraq_window,
-#'                    time_col = "time",
-#'                    time_range = c(1, max(dat_out$time)),
-#'                    coordinates = c("longitude", "latitude"),
-#'                    combine = TRUE)
-#'
-#' # Smoothing outcome
-#' smooth_ppp(data = dat_hfr$all_combined,
-#'            method = "mclust",
-#'            sampling = 0.05)
 
 smooth_ppp <- function(data,
                        method,
@@ -108,7 +89,7 @@ smooth_ppp <- function(data,
     use_h0 <- as.numeric(scott_bw)
     pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian") # Density based on h0
 
-    him_points <- spatstat.explore::bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
+    him_points <- spatstat.explore::bw.abram.ppp(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
     num_points <- as.numeric(purrr::map(as.list(data), 2, .default = NA) %>% unlist()) # Num of points for each time frame
     bw_pt <- split(him_points, rep(1 : length(data), num_points))
 
