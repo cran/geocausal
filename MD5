@@ -1,6 +1,6 @@
-2942878f99ef55eac633644f9ad2653d *DESCRIPTION
+c46a36bf135b3fcccb58c41cb6f87562 *DESCRIPTION
 35d52881900865b3b65dfdad085a0ca1 *LICENSE
-48092f3680c328b7aca0bf7eb0fc0d41 *NAMESPACE
+32dff7e3e42516702d381e42a2b829e6 *NAMESPACE
 1b5ccab9f5e782a25979ab030bf06fd0 *NEWS.md
 c8bb721c482da88537a2bb64340d38d4 *R/conv_owin_into_sf.R
 ac8fc9c5f8148ba176eab30174688716 *R/data-airstrikes.R
@@ -37,7 +37,7 @@ bd00bd54d6c6d83f6db190e4f223f968 *R/plot.obs.R
 1ff3316906e691660e143bf354dc9d0b *R/predict_obs_dens.R
 9e0c08efaccd522f219bb9d7711368e0 *R/sim_cf_dens.R
 d7dc5cc81587297ed93aec9995750491 *R/sim_power_dens.R
-330fd6a1dce8ae4204f5caba628604c3 *R/smooth_ppp.R
+3a218977bd642d8f84cf8c64912cf495 *R/smooth_ppp.R
 3151a8994cf0c6f8d5c842216f290054 *R/summary.cate.R
 eb510c203e812ae1b255cb303f0937b8 *R/summary.est.R
 2d1a24e2217e32fe56a98ba3510d3ca5 *R/summary.obs.R

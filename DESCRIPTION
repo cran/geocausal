@@ -1,7 +1,7 @@
 Package: geocausal
 Type: Package
 Title: Causal Inference with Spatio-Temporal Data
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: c(
     person(given = "Mitsuru", family = "Mukaigawara", 
            email = "mitsuru_mukaigawara@g.harvard.edu", 
@@ -40,7 +40,7 @@ Imports: data.table, dplyr, furrr, ggplot2, ggpubr, latex2exp, mclust,
 RoxygenNote: 7.3.2
 Depends: R (>= 3.5.0)
 NeedsCompilation: no
-Packaged: 2024-07-07 02:23:04 UTC; mitsurumukaigawara
+Packaged: 2024-07-19 19:20:20 UTC; mitsurumukaigawara
 Author: Mitsuru Mukaigawara [cre, aut]
     (<https://orcid.org/0000-0001-6530-2083>),
   Lingxiao Zhou [aut],
@@ -48,4 +48,4 @@ Author: Mitsuru Mukaigawara [cre, aut]
   Jason Lyall [aut] (<https://orcid.org/0000-0001-9117-7503>),
   Kosuke Imai [aut] (<https://orcid.org/0000-0002-2748-1022>)
 Repository: CRAN
-Date/Publication: 2024-07-07 02:40:02 UTC
+Date/Publication: 2024-07-19 19:30:02 UTC
