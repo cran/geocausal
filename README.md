@@ -5,9 +5,8 @@
 
 <!-- badges: start -->
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
+[![](http://www.r-pkg.org/badges/version/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
-[![](http://cranlogs.r-pkg.org/badges/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
 [![](http://cranlogs.r-pkg.org/badges/last-week/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
 <!-- badges: end -->
 
@@ -18,6 +17,12 @@ provide the raw data of locations and timings of treatment and outcome
 events, specify counterfactual scenarios, and the package estimates
 causal effects over specified spatial and temporal windows.
 
+Please refer to the following preprint for the user guide.
+
+> Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024).
+> Geocausal: An R Package for Spatio-temporal Causal Inference. OSF
+> Preprints. August 27. <https://doi.org/10.31219/osf.io/5kc6f>.
+
 For methodological details, please refer to the following article.
 
 > Papadogeorgou G, Imai K, Lyall J, and Li F (2022). Causal inference
@@ -25,16 +30,13 @@ For methodological details, please refer to the following article.
 > insurgent violence in Iraq. *J R Stat Soc Series B.*
 > <https://doi.org/10.1111/rssb.12548>.
 
-Additionally, **an article describing the usage of this package is
-coming soon.**
-
 ## Citation
 
 Please cite this package as follows:
 
-> Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, Imai K (2024).
-> geocausal: Causal Inference with Spatio-Temporal Data. R package
-> version 0.3.1, <https://github.com/mmukaigawara/geocausal>
+> Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024).
+> Geocausal: An R Package for Spatio-temporal Causal Inference. OSF
+> Preprints. August 27. <https://doi.org/10.31219/osf.io/5kc6f>.
 
 ## Installation
 

@@ -1,7 +1,7 @@
 Package: geocausal
 Type: Package
 Title: Causal Inference with Spatio-Temporal Data
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: c(
     person(given = "Mitsuru", family = "Mukaigawara", 
            email = "mitsuru_mukaigawara@g.harvard.edu", 
@@ -27,12 +27,14 @@ Description: Spatio-temporal causal inference based on point process data.
     You provide the raw data of locations and timings of treatment and 
     outcome events, specify counterfactual scenarios, and the package 
     estimates causal effects over specified spatial and temporal windows.
-    See Papadogeorgou, et  al. (2022) <doi:10.1111/rssb.12548>.
+    See Papadogeorgou, et  al. (2022) <doi:10.1111/rssb.12548> and
+    Mukaigawara, et al. (2024) <doi:10.31219/osf.io/5kc6f>.
 License: MIT + file LICENSE
 URL: https://github.com/mmukaigawara/geocausal
 Encoding: UTF-8
 LazyData: true
-Suggests: elevatr, geosphere, gridExtra, ggthemes, knitr, readr
+Suggests: elevatr, geosphere, gridExtra, ggthemes, knitr, readr,
+        gridGraphics
 Imports: data.table, dplyr, furrr, ggplot2, ggpubr, latex2exp, mclust,
         progressr, purrr, sf, spatstat.explore, spatstat.geom,
         spatstat.model, spatstat.univar, terra, tidyr, tidyselect,
@@ -40,7 +42,7 @@ Imports: data.table, dplyr, furrr, ggplot2, ggpubr, latex2exp, mclust,
 RoxygenNote: 7.3.2
 Depends: R (>= 3.5.0)
 NeedsCompilation: no
-Packaged: 2024-07-19 19:20:20 UTC; mitsurumukaigawara
+Packaged: 2024-12-03 16:47:25 UTC; mitsurumukaigawara
 Author: Mitsuru Mukaigawara [cre, aut]
     (<https://orcid.org/0000-0001-6530-2083>),
   Lingxiao Zhou [aut],
@@ -48,4 +50,4 @@ Author: Mitsuru Mukaigawara [cre, aut]
   Jason Lyall [aut] (<https://orcid.org/0000-0001-9117-7503>),
   Kosuke Imai [aut] (<https://orcid.org/0000-0002-2748-1022>)
 Repository: CRAN
-Date/Publication: 2024-07-19 19:30:02 UTC
+Date/Publication: 2024-12-03 23:00:06 UTC

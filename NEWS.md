@@ -1,3 +1,8 @@
+# geoacusal 0.3.3
+
+* Updated plot functions and restructured the package
+* Updated the `get_var_bound()` function
+
 # geocausal 0.3.1
 
 * Incorporated functions for heterogeneity analyses

@@ -18,7 +18,6 @@
 #' @param eval_values a vector of values of the effect modifier for which CATE will be evaluated. Default is a `seq(a,b,length.out=20)` where `a` and `b` are minimum and maximum values of the effect modifier.
 #' @param eval_mat evaluated spline basis (excluding the intercept) matrix at `eval_values`.  If `intercept = TRUE`, then a column of 1 will be add to `eval_mat`.
 #' @param test_beta a vector of integers contain the indices of the coefficients that are included in the hypothesis test. By default, the null hypothesis is that all coefficient  (except the intercept is 0). See details below
-#' @param bound either `1` or `2` specifying which bound estimator will be used. Default is `1`
 #' @param save_weights whether to save weights. Default is `TRUE`
 #' @param ... arguments passed onto the function 
 #' 
@@ -43,7 +42,7 @@
 get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95, time_after=TRUE,entire_window = NULL,
                      em = NULL,E_mat = NULL,
                      nbase = 6, spline_type = "ns",intercept = TRUE,
-                     eval_values = NULL, eval_mat = NULL,test_beta = NULL,bound=1,save_weights = TRUE,...) {
+                     eval_values = NULL, eval_mat = NULL,test_beta = NULL,save_weights = TRUE,...) {
   # pixel_ratio <- 8451/(128*128)
   chisq_stat <- NULL
   p.value <- NULL
@@ -81,7 +80,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   }
   
   #-------------------------get the weighted surfaces------------------------------------
-  cat("Get weighted surfaces... \n")
+  message("Get weighted surfaces... \n")
   # CF1
   estimates_1 <- get_weighted_surf(obs_dens = obs,
                                    cf_dens = cf1,
@@ -108,7 +107,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   
   dimyx <- dim(estimates_1$weighted_surface_arr_haj)[c(1,2)]
-  cat('In the analysis, pixel grid dimension is', dimyx,"\n")
+  message('In the analysis, pixel grid dimension is ', dimyx[1],"x",dimyx[2],"\n")
   time_points <- dim(estimates_1$weighted_surface_arr_haj)[3]
   # dimyx <- dim(estimates$av_surface[[1]])[c(1,2)]
   # time_points <- dim(estimates$av_surface[[1]])[3]
@@ -117,7 +116,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   #------------------------construct the basis matrix if not provided----------------------
   if(is.null(E_mat)){
-    cat("Generate spline basis...\n")
+    message("Generate spline basis...\n")
     if("im"%in%class(em[[1]])){
       em <- lapply(1:length(em), function(x) as.matrix(as.im(em[[x]],dimyx = dimyx)))
     }else if(!"array"%in%class(em[[1]])){
@@ -156,7 +155,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
 
   #---------------------------------fit the model-----------------------------------
-  cat("Fit the model...\n")
+  message("Fit the model...\n")
   # form a dataframe for the estimates and covariates
   df <- cbind.data.frame(E = E_mat,estimates1 = c(estimates_1$weighted_surface_arr_haj),estimates2 = c(estimates_2$weighted_surface_arr_haj))
   weights <- rbind(estimates_1$weights,estimates_2$weights)
@@ -206,15 +205,9 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   # Jocobian matrix 
   J <- cbind(-diag(p),
              diag(p),
-             beta1/mean(weights[1,]),
-             -beta2/mean(weights[2,]))
+             beta1/estimates_1$stabilizer,
+             -beta2/estimates_2$stabilizer)
   
-  if(bound==2){
-    J <- cbind(-diag(p),
-               diag(p),
-               beta1,
-               -beta2)
-  }
 
   
 
@@ -248,7 +241,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   
   #-----------------------prediction and varaince-------------------------------
-  cat("Get the predicted value and variance... \n") 
+  message("Get the predicted value and variance... \n") 
   V_eval <- eval_mat%*%V%*%t(eval_mat)/time_points   # NOTE we divide by T here!
 
   est_eval <- c(eval_mat%*%beta)
